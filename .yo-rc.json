@@ -1,0 +1,21 @@
+{
+  "generator-ngx-rocket": {
+    "version": "3.2.1",
+    "props": {
+      "appName": "ngx-tabs",
+      "target": [
+        "web",
+        "cordova"
+      ],
+      "pwa": true,
+      "mobile": [
+        "ios",
+        "android"
+      ],
+      "ui": "ionic",
+      "auth": true,
+      "projectName": "ngx-tabs",
+      "packageManager": "npm"
+    }
+  }
+}
