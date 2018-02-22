@@ -2,11 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { ActionSheetController, AlertController, Platform, ActionSheetOptions } from 'ionic-angular';
 import { ActionSheetButton } from 'ionic-angular/components/action-sheet/action-sheet-options';
+import { Tab } from 'ionic-angular/navigation/nav-interfaces';
 import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
+import { findIndex } from 'lodash';
 
 import { AuthenticationService } from '../authentication/authentication.service';
 import { I18nService } from '../i18n.service';
+
+import { HomeComponent } from '../../home/home.component';
+import { AboutComponent } from '../../about/about.component';
 
 @Component({
   selector: 'app-shell',
@@ -14,8 +19,13 @@ import { I18nService } from '../i18n.service';
   styleUrls: ['./shell.component.scss']
 })
 export class ShellComponent implements OnInit {
+  tabs = [{
+    component: HomeComponent, route: 'home', title: 'Home', icon: 'home'
+  }, {
+    component: AboutComponent, route: 'about', title: 'About', icon: 'logo-angular'
+  }];
+  selectedTabIndex: number;
 
-  navRoot: Component;
   subscription: any;
 
   constructor(private router: Router,
@@ -28,13 +38,17 @@ export class ShellComponent implements OnInit {
               private i18nService: I18nService) { }
 
   ngOnInit() {
-    this.updateNav(this.activatedRoute);
+    this.updateTab(this.activatedRoute);
 
     // Bind Ionic navigation to Angular router events
     this.subscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => this.updateNav(this.activatedRoute));
-    }
+      .subscribe(() => this.updateTab(this.activatedRoute));
+  }
+
+  onTabChange(selectedTab: Tab) {
+    this.router.navigate([this.tabs[selectedTab.index].route]);
+  }
 
   showProfileActions() {
     const actionSheetOptions: ActionSheetOptions = { title: this.username || undefined };
@@ -112,7 +126,7 @@ export class ShellComponent implements OnInit {
       .present();
   }
 
-  private updateNav(route: ActivatedRoute) {
+  private updateTab(route: ActivatedRoute) {
     if (!route || !route.firstChild) {
       return;
     }
@@ -128,8 +142,7 @@ export class ShellComponent implements OnInit {
       }
       // Fixed #19420 end
 
-      this.navRoot = <Component>route.component;
+      this.selectedTabIndex = findIndex(this.tabs, { route: route.routeConfig.path });
     }
   }
-
 }
