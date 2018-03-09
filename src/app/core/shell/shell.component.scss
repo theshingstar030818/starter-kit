@@ -15,7 +15,7 @@ ion-tabs::ng-deep {
       flex-direction: column;
       justify-content: flex-start;
 
-      a {
+      .tab-button {
         width: 100%;
         height: $tabs-height;
         flex: 0 1 auto;
